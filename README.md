@@ -1,0 +1,1 @@
+# Supplier-Risk-Intelligence system for manufacturing enterprises
