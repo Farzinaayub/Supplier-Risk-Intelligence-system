@@ -1,0 +1,149 @@
+version: '3.8'
+
+services:
+  # --------------------------------------------------------------------------
+  # PostgreSQL - Data warehouse for raw, staging, and mart tables
+  # --------------------------------------------------------------------------
+  postgres:
+    image: postgres:15-alpine
+    container_name: supplier_risk_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-supplier_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD?err=DB_PASSWORD is required}
+      POSTGRES_DB: ${DB_NAME:-supplier_risk}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Optional: init scripts (e.g., create schemas) – mount only if needed
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "127.0.0.1:${DB_PORT:-5432}:5432"   # Bind only to localhost for security
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-supplier_user} -d ${DB_NAME:-supplier_risk}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - risk_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # --------------------------------------------------------------------------
+  # n8n - Workflow orchestration (ingestion, dbt runs, alerts, reporting)
+  # --------------------------------------------------------------------------
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: supplier_risk_n8n
+    restart: unless-stopped
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_ADMIN_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_ADMIN_PASSWORD?err=N8N_ADMIN_PASSWORD is required}
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${DB_NAME:-supplier_risk}
+      - DB_POSTGRESDB_USER=${DB_USER:-supplier_user}
+      - DB_POSTGRESDB_PASSWORD=${DB_PASSWORD?err=DB_PASSWORD is required}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY?err=Encryption key required for credentials}
+      - EXTERNAL_HOOK_FILES=/home/node/.n8n/custom/hooks.js   # optional custom hooks
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n/workflows:/home/node/.n8n/workflows   # store workflow JSONs for versioning
+      - ./n8n/templates:/home/node/.n8n/templates
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - risk_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # --------------------------------------------------------------------------
+  # App (placeholder) - Python + dbt + clustering scripts
+  # Build from Dockerfile in ./app
+  # --------------------------------------------------------------------------
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: supplier_risk_app:latest
+    container_name: supplier_risk_app
+    restart: "no"   # manual runs only (or scheduled via n8n execution)
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-supplier_user}
+      - DB_PASSWORD=${DB_PASSWORD?err=DB_PASSWORD required}
+      - DB_NAME=${DB_NAME:-supplier_risk}
+      - PYTHONUNBUFFERED=1
+      - DBT_PROFILES_DIR=/app/dbt
+    volumes:
+      - ./app:/app          # mount code for development; in prod copy into image
+      - ./data:/data        # shared volume for synthetic data generation
+      - ./config:/config    # YAML configs (model parameters, thresholds)
+      - ./secrets:/secrets:ro  # read-only keys (salt, license)
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - risk_network
+    # No ports exposed - only internal calls
+    command: ["echo", "App container ready. Use 'docker exec' or n8n to run scripts."]
+    # For development, you can override command:
+    # command: ["tail", "-f", "/dev/null"]
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# --------------------------------------------------------------------------
+# Optional: Caddy reverse proxy (if you need HTTPS for dashboard or n8n)
+# Uncomment if you want to expose services with automatic TLS
+# --------------------------------------------------------------------------
+#  caddy:
+#    image: caddy:2-alpine
+#    container_name: supplier_risk_caddy
+#    restart: unless-stopped
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#    volumes:
+#      - ./Caddyfile:/etc/caddy/Caddyfile
+#      - caddy_data:/data
+#      - caddy_config:/config
+#    networks:
+#      - risk_network
+#    depends_on:
+#      - n8n
+#      - app   # if app serves dashboard (e.g., Evidence)
+# --------------------------------------------------------------------------
+
+volumes:
+  postgres_data:
+    driver: local
+  n8n_data:
+    driver: local
+  # caddy_data:     # uncomment if using Caddy
+  # caddy_config:
+
+networks:
+  risk_network:
+    driver: bridge
