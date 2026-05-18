@@ -38,3 +38,7 @@ data/
 .DS_Store
 .vscode/
 .idea/
+git token.txt
+
+*.ipynb
+.ipynb_checkpoints/

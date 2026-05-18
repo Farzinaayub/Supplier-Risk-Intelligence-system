@@ -3,20 +3,20 @@ from nbconvert.preprocessors import ExecutePreprocessor
 from pathlib import Path
 
 # Project root
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent[0]
 
 GEN_DIR = BASE_DIR / "synth_scripts" / "gen"
 VAL_DIR = BASE_DIR / "synth_scripts" / "val"
 
 PIPELINE = [
-    GEN_DIR / "suppliermaster.ipynb",
-    GEN_DIR / "purchaseorder.ipynb",
-    GEN_DIR / "shipments.ipynb",
-    GEN_DIR / "qualityinspection.ipynb",
-    GEN_DIR / "inventory.ipynb",
-    GEN_DIR / "supplieraudit.ipynb",
-    GEN_DIR / "incident.ipynb",
-    VAL_DIR / "Validate_synthetic_data.ipynb",
+    GEN_DIR / "suppliermaster.py",
+    GEN_DIR / "purchaseorder.py",
+    GEN_DIR / "shipments.py",
+    GEN_DIR / "qualityinspection.py",
+    GEN_DIR / "inventory.py",
+    GEN_DIR / "supplieraudit.py",
+    GEN_DIR / "incident.py",
+    VAL_DIR / "validate.py",
 ]
 
 for notebook_path in PIPELINE:

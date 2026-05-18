@@ -1,0 +1,149 @@
+dataset:
+  output_path: data/raw/df_quality_inspections.csv
+
+source_tables:
+  suppliers: data/raw/df_suppliers.csv
+  purchase_orders: data/raw/df_po.csv
+  shipments: data/raw/df_shipments.csv
+
+defect_map:
+
+  electronics:
+    - PCB Damage
+    - Component Misalignment
+    - Solder Failure
+    - ESD Damage
+    - Voltage Instability
+
+  metals:
+    - Surface Corrosion
+    - Dimensional Variance
+    - Cracks
+    - Material Impurity
+
+  packaging:
+    - Seal Failure
+    - Compression Damage
+    - Print Misalignment
+
+  chemicals:
+    - Contamination
+    - Incorrect Composition
+    - Moisture Exposure
+
+  plastics:
+    - Warping
+    - Color Mismatch
+    - Structural Weakness
+
+  logistics:
+    - Handling Damage
+    - Labeling Error
+
+  textiles:
+    - Fabric Tear
+    - Color Bleeding
+    - Stitch Defect
+
+supplier_quality_profiles:
+  profiles:
+    - excellent
+    - good
+    - average
+    - poor
+
+  probabilities:
+    - 0.20
+    - 0.45
+    - 0.25
+    - 0.10
+
+quality_defect_rates:
+  excellent: 0.003
+  good: 0.015
+  average: 0.050
+  poor: 0.120
+
+inspection_probability:
+
+  base_probability: 0.10
+
+  criticality:
+    level_3: 0.15
+    level_4_plus: 0.30
+
+  delayed_shipment: 0.20
+
+  supplier_quality:
+    poor: 0.35
+    average: 0.15
+    excellent: -0.05
+
+  high_order_value:
+    threshold: 500000
+    increment: 0.10
+
+  international_supplier: 0.05
+
+  min_probability: 0.02
+  max_probability: 0.95
+
+inspection_ratio:
+
+  1:
+    min: 0.05
+    max: 0.15
+
+  2:
+    min: 0.10
+    max: 0.25
+
+  3:
+    min: 0.20
+    max: 0.50
+
+  4:
+    min: 0.50
+    max: 0.80
+
+  5:
+    min: 0.80
+    max: 1.00
+
+defect_rate_adjustments:
+
+  delayed_shipment_multiplier: 1.50
+
+  transport_mode:
+    sea: 1.20
+    air: 0.90
+
+  high_criticality_multiplier: 0.85
+
+  operational_variance:
+    min: 0.80
+    max: 1.20
+
+rejected_units_randomness:
+  min: 0
+  multiplier: 0.02
+  fallback_max: 2
+
+severity_thresholds:
+  low: 0.01
+  medium: 0.05
+  high: 0.10
+
+electronics_severe_defects:
+  - Voltage Instability
+  - ESD Damage
+
+electronics_severity_override:
+  - High
+  - Critical
+
+inspection_date:
+  min_days_after_arrival: 0
+  max_days_after_arrival: 4
+
+domestic_country: India

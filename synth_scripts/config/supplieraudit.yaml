@@ -1,0 +1,65 @@
+dataset:
+  output_path: data/raw/df_supplier_audits.csv
+
+source_tables:
+  suppliers: data/raw/df_suppliers.csv
+  purchase_orders: data/raw/df_po.csv
+  shipments: data/raw/df_shipments.csv
+  quality_inspections: data/raw/df_quality_inspections.csv
+  inventory: data/raw/df_inventory.csv
+
+audit_frequency_by_criticality:
+  1: 1
+  2: 1
+  3: 2
+  4: 3
+  5: 4
+
+penalties:
+  shipment_delay_multiplier: 25
+  rejection_ratio_multiplier: 100
+  low_stock_multiplier: 20
+
+international_risk:
+  domestic_country: India
+  penalty_min: 1
+  penalty_max: 5
+
+audit_variance:
+  mean: 0
+  stddev: 3
+
+audit_score:
+  min_score: 35
+  max_score: 100
+
+major_findings:
+  audit_score_below_85:
+    min: 0
+    max: 1
+
+  audit_score_below_70:
+    min: 1
+    max: 3
+
+  rejection_ratio_threshold: 0.08
+  rejection_ratio_penalty: 1
+
+minor_findings:
+  base_min: 0
+  base_max: 5
+
+  delay_ratio_threshold: 0.20
+
+  additional_if_delayed:
+    min: 1
+    max: 3
+
+compliance_rules:
+  compliant_min: 90
+  conditional_min: 75
+  under_review_min: 60
+
+audit_date:
+  start_date: 2025-01-01
+  random_days_range: 365

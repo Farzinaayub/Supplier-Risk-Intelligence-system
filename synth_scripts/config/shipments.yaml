@@ -1,0 +1,135 @@
+dataset:
+  output_path: data/raw/df_shipments.csv
+
+source_tables:
+  suppliers: data/raw/df_suppliers.csv
+  purchase_orders: data/raw/df_po.csv
+
+delay_reasons:
+  - Port Congestion
+  - Customs Clearance
+  - Weather Disruption
+  - Supplier Production Delay
+  - Documentation Issue
+  - Carrier Capacity Shortage
+  - Labor Strike
+
+transport_rules:
+
+  electronics:
+    modes:
+      - air
+      - sea
+    weights:
+      - 0.3
+      - 0.7
+
+  metals:
+    modes:
+      - sea
+      - rail
+    weights:
+      - 0.8
+      - 0.2
+
+  packaging:
+    modes:
+      - road
+    weights:
+      - 1.0
+
+  chemicals:
+    modes:
+      - road
+      - sea
+    weights:
+      - 0.6
+      - 0.4
+
+  plastics:
+    modes:
+      - road
+      - sea
+    weights:
+      - 0.7
+      - 0.3
+
+  textiles:
+    modes:
+      - sea
+      - air
+    weights:
+      - 0.8
+      - 0.2
+
+prep_days:
+
+  electronics:
+    min: 7
+    max: 24
+
+  metals:
+    min: 5
+    max: 17
+
+  packaging:
+    min: 2
+    max: 6
+
+  chemicals:
+    min: 5
+    max: 14
+
+  default:
+    min: 3
+    max: 11
+
+transit_days:
+
+  air:
+    min: 2
+    max: 9
+
+  sea:
+    min: 20
+    max: 59
+
+  road:
+    min: 2
+    max: 11
+
+  rail:
+    min: 7
+    max: 19
+
+domestic_rules:
+  domestic_country: India
+  domestic_speed_multiplier: 0.6
+
+criticality_rules:
+  expedited_threshold: 4
+  expedited_multiplier: 0.85
+
+shipment_status_distribution:
+  statuses:
+    - Delivered
+    - Delayed
+    - In Transit
+    - Cancelled
+
+  probabilities:
+    - 0.70
+    - 0.20
+    - 0.07
+    - 0.03
+
+delivery_variance:
+  delivered:
+    min: -2
+    max: 2
+
+  delayed:
+    min: 2
+    max: 14
+
+cancelled_reason: Shipment Cancelled

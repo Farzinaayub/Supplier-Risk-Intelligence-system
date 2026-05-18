@@ -1,0 +1,11 @@
+[33me3ef520[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m Add config files for data generation and validation  pipeline
+[33m39e4ce0[m stop tracking notebooks
+[33m5ca1dc4[m Reproducible data
+[33m06e9be0[m added validation script
+[33m386ded0[m Add validation Methodology.md
+[33m775ae7e[m Add synthetic data generation notebooks
+[33m4f6bf5a[m Add synthetic data methodology documentation
+[33mca8f474[m[33m ([m[1;33mtag: v0.1.0-init[m[33m)[m Update environment, docs, Makefile, and Docker Compose setup
+[33mf93c6a4[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Version1
+[33m535538a[m add proprietary license
+[33me3b616a[m Initial commit

@@ -1,0 +1,102 @@
+dataset:
+  n_rows: 10000
+  output_path: data/raw/df_po.csv
+
+source_tables:
+  suppliers: data/raw/df_suppliers.csv
+
+component_map:
+
+  electronics:
+    - CMP_ELEC_001
+    - CMP_ELEC_002
+
+  metals:
+    - CMP_MET_001
+    - CMP_MET_002
+
+  packaging:
+    - CMP_PKG_001
+
+  chemicals:
+    - CMP_CHEM_001
+
+  plastics:
+    - CMP_PLAS_001
+
+  logistics:
+    - CMP_LOG_001
+
+  textiles:
+    - CMP_TEXT_001
+
+unit_prices:
+  CMP_ELEC_001: 45
+  CMP_ELEC_002: 120
+  CMP_MET_001: 15
+  CMP_MET_002: 22
+  CMP_PKG_001: 2
+  CMP_CHEM_001: 8
+  CMP_PLAS_001: 4
+  CMP_LOG_001: 1
+  CMP_TEXT_001: 6
+
+order_dates:
+  start_date: 2025-01-01
+  random_days_range: 365
+
+lead_times:
+
+  electronics:
+    min: 30
+    max: 90
+
+  metals:
+    min: 15
+    max: 45
+
+  packaging:
+    min: 7
+    max: 20
+
+  default:
+    min: 10
+    max: 39
+
+delivery_delay:
+
+  values:
+    - -3
+    - -1
+    - 0
+    - 0
+    - 0
+    - 2
+    - 5
+    - 10
+    - 20
+
+  probabilities:
+    - 0.03
+    - 0.07
+    - 0.40
+    - 0.20
+    - 0.10
+    - 0.10
+    - 0.05
+    - 0.03
+    - 0.02
+
+quantity_distribution:
+  distribution: lognormal
+  mean: 6
+  sigma: 1
+  minimum_quantity: 1
+
+partial_delivery:
+
+  probability_threshold: 0.10
+
+  received_ratio:
+    min: 0.70
+    max: 0.98

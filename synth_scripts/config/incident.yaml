@@ -1,0 +1,92 @@
+dataset:
+  output_path: data/raw/df_supplier_incidents.csv
+
+source_tables:
+  suppliers: data/raw/df_suppliers.csv
+  purchase_orders: data/raw/df_po.csv
+  shipments: data/raw/df_shipments.csv
+  quality_inspections: data/raw/df_quality_inspections.csv
+  inventory: data/raw/df_inventory.csv
+  supplier_audits: data/raw/df_supplier_audits.csv
+
+incident_probability:
+
+  base_probability: 0.05
+
+  delay_ratio_multiplier: 0.40
+
+  rejection_ratio_multiplier: 0.80
+
+  low_stock_ratio_multiplier: 0.30
+
+  audit_score:
+    below_70: 0.25
+    below_85: 0.10
+
+  high_criticality_increment: 0.10
+
+  max_probability: 0.95
+
+incident_count:
+  poisson_multiplier: 4
+
+incident_types:
+
+  logistics:
+    - Shipment Delay
+    - Port Congestion
+    - Customs Hold
+    - Carrier Failure
+
+  quality:
+    - Quality Failure
+    - Batch Rejection
+    - Product Recall
+
+  inventory:
+    - Stockout
+    - Supply Shortage
+
+  compliance:
+    - Audit Non-Compliance
+    - Regulatory Violation
+
+  operations:
+    - Production Shutdown
+    - Labor Strike
+    - Cybersecurity Incident
+
+severity_distribution:
+
+  Low: 0.40
+  Medium: 0.35
+  High: 0.20
+  Critical: 0.05
+
+severity_adjustments:
+
+  audit_score_below_70:
+    Critical: 0.10
+    High: 0.10
+
+impact_ranges:
+
+  Low:
+    min: 1
+    max: 8
+
+  Medium:
+    min: 8
+    max: 24
+
+  High:
+    min: 24
+    max: 72
+
+  Critical:
+    min: 72
+    max: 240
+
+incident_dates:
+  start_date: 2025-01-01
+  random_days_range: 365

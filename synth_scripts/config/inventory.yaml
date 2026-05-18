@@ -1,0 +1,89 @@
+dataset:
+  output_path: data/raw/df_inventory.csv
+
+source_tables:
+  suppliers: data/raw/df_suppliers.csv
+  purchase_orders: data/raw/df_po.csv
+  shipments: data/raw/df_shipments.csv
+  quality_inspections: data/raw/df_quality_inspections.csv
+
+plant_map:
+
+  electronics:
+    - PLANT_IND_001
+    - PLANT_IND_002
+
+  metals:
+    - PLANT_US_001
+    - PLANT_IND_004
+
+  packaging:
+    - PLANT_IND_003
+
+  chemicals:
+    - PLANT_IND_005
+
+  plastics:
+    - PLANT_IND_006
+
+  textiles:
+    - PLANT_IND_007
+
+  default:
+    - PLANT_MISC_001
+
+consumption_ranges:
+
+  electronics:
+    min: 20
+    max: 150
+
+  metals:
+    min: 50
+    max: 300
+
+  packaging:
+    min: 200
+    max: 1000
+
+  chemicals:
+    min: 30
+    max: 120
+
+  plastics:
+    min: 40
+    max: 200
+
+  textiles:
+    min: 25
+    max: 100
+
+  default:
+    min: 10
+    max: 50
+
+consumption_days:
+  min: 5
+  max: 89
+
+max_consumption_ratio:
+  min: 0.20
+  max: 0.85
+
+safety_stock:
+
+  base_multiplier: 1.0
+
+  international_supplier_increment: 0.50
+
+  high_criticality_increment: 0.50
+
+  lead_time_days:
+    min: 5
+    max: 19
+
+  variability_multiplier:
+    min: 0.8
+    max: 1.5
+
+domestic_country: India
